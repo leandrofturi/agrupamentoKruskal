@@ -7,7 +7,6 @@
 typedef struct tAresta {
     int u, v;
     double w;
-    struct tAresta *prox;
 } tAresta;
 
 typedef struct tGrafo {
@@ -17,7 +16,7 @@ typedef struct tGrafo {
 } tGrafo;
 
 
-static int pos(tGrafo *G, char *p) {
+static int key(tGrafo *G, char *p) {
     for(int i = 0; i < G->N; i++)
         if(strcmp(G->rotulos[i], p) == 0)
             return(i);
@@ -30,96 +29,56 @@ static char* rot(tGrafo *G, int p) {
     return(G->rotulos[p]);
 }
 
-tGrafo* inicializa_tGrafo(int N, char **rotulos) {
+// https://stackoverflow.com/questions/43099269/qsort-function-in-c-used-to-compare-an-array-of-strings
+static int cmpstr(const void *a, const void *b) {
+   return strcmp(*(const char **) a, *(const char **) b);
+}
+
+tGrafo* inicializa_tGrafo(int M, int N, char **rotulos) {
     tGrafo *G = (tGrafo*) malloc(sizeof(tGrafo));
+    G->arestas = (tAresta*) malloc(M*sizeof(tAresta));
     G->rotulos = (char**) malloc(N*sizeof(char*));
-    for(int i = 0; i < N; i++)
-        G->rotulos[i] = rotulos[i];
-    
-    G->N = N;
-    G->arestas = NULL;
+    for(int i = 0; i < N; i++) {
+        G->rotulos[i] = (char*) malloc(sizeof(rotulos[i]));
+        strcpy(G->rotulos[i], rotulos[i]);
+    }
+    qsort(G->rotulos, N, sizeof(char*), cmpstr);
     G->M = 0;
+    G->N = N;
     return(G);
 }
 
-void finaliza_tGrafo(tGrafo *G) {  
-    tAresta *atual = G->arestas, *prox;
-    while(atual) {
-        prox = atual->prox;
-        free(atual);
-        atual = prox;
-    }
+void finaliza_tGrafo(tGrafo *G) {
+    free(G->arestas);
+    for(int i = 0; i < G->N; i++)
+        free(G->rotulos[i]);
     free(G->rotulos);
     free(G);
 }
 
-bool existeAresta_tGrafo(tGrafo *G, char *p, char *q) {
-    tAresta *atual = G->arestas;
-    int P = pos(G, p), Q = pos(G, q);
-    while(atual) {
-        if((atual->u == P && atual->v == Q) || 
-           (atual->u == Q && atual->v == P))
-            return(true);
-        atual = atual->prox;
-    }
-    return(false);
-}
-
-bool existeVertice_tGrafo(tGrafo *G, char *p) {
-    for(int i = 0; i < G->N; i++)
-        if(strcmp(G->rotulos[i], p) == 0)
-            return(true);
-    return(false);
-}
-
 void addAresta_tGrafo(tGrafo *G, char *p, char *q, double w) {
-    if(existeAresta_tGrafo(G, p, q)) {
-        printf("ATENCAO! Aresta ja existente!\n");
-        return;
-    }
-    if(!existeVertice_tGrafo(G, p) || !existeVertice_tGrafo(G, q)) {
-        printf("ATENCAO! Vertice inexistente!\n");
-        return;
-    }
-    if(G->M > (G->N*(G->N-1)/2)) {
-        printf("ATENCAO! Maximo de arestas atingido!\n");
-        return;
-    }
-
-    tAresta **atual = &(G->arestas);
-    while((*atual) && (*atual)->w <= w)
-        atual = &(*atual)->prox;
-
-    tAresta *nova = (tAresta*) malloc(sizeof(tAresta));
-    nova->u = pos(G, p);
-    nova->v = pos(G, q);
-    nova->w = w;
-    nova->prox = *atual;
-    *atual = nova;
+    G->arestas[G->M].u = key(G, p);
+    G->arestas[G->M].v = key(G, q);
+    G->arestas[G->M].w = w;
     G->M++;
 }
 
 void imprime_tGrafo(tGrafo *G) {
-    tAresta *atual = G->arestas;
     printf("\n");
-    for(int i = 0; i < G->M; i++) {
-        printf("(%s, %s) %.2lf\n", rot(G, atual->u), rot(G, atual->v), atual->w);
-        atual = atual->prox;
-    }
+    for(int i = 0; i < G->M; i++)
+        printf("(%s, %s) %.2lf\n", rot(G, G->arestas[i].u), rot(G, G->arestas[i].v), G->arestas[i].w);
     printf("\n");
 }
 
 tGrafo* Kruskal_tGrafo(tGrafo *G) {
     int **id = inicializa_QU(G->N);
-    tGrafo *H = inicializa_tGrafo(G->N, G->rotulos);
+    tGrafo *H = inicializa_tGrafo(G->N-1, G->N, G->rotulos);
     
-    tAresta *atual = G->arestas;
-    while(atual) {
-        if(!conectados_QU(id, atual->u, atual->v)) {
-            addAresta_tGrafo(H, rot(G, atual->u), rot(G, atual->v), atual->w);
-            une_QU(id, atual->u, atual->v);
+    for(int i = 0; i < G->M; i++) {
+        if(!conectados_QU(id, G->arestas[i].u, G->arestas[i].v)) {
+            addAresta_tGrafo(H, rot(G, G->arestas[i].u), rot(G, G->arestas[i].v), G->arestas[i].w);
+            une_QU(id, G->arestas[i].u, G->arestas[i].v);
         }
-        atual = atual->prox;
     }
     finaliza_QU(id);
     return(H);

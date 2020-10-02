@@ -6,7 +6,7 @@ typedef struct tGrafo tGrafo;
 
 
 // Inicialização
-tGrafo* inicializa_tGrafo(int N, char **rotulos);
+tGrafo* inicializa_tGrafo(int M, int N, char **rotulos);
 
 // Finalização
 void finaliza_tGrafo(tGrafo *G);

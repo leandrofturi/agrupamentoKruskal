@@ -8,7 +8,7 @@
 int main(int argc, char *argv[]) {
     int N = 7;
     char *rotulos[7] = {"0","1","2","3","4","5","6"};
-    tGrafo *G = inicializa_tGrafo(N, rotulos);
+    tGrafo *G = inicializa_tGrafo(11, N, rotulos);
     addAresta_tGrafo(G, "0", "1", 7);
     addAresta_tGrafo(G, "0", "3", 5);
     addAresta_tGrafo(G, "1", "3", 9);
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     addAresta_tGrafo(G, "4", "5", 8);
     addAresta_tGrafo(G, "4", "6", 9);
     addAresta_tGrafo(G, "5", "6", 11);
-    //imprime_tGrafo(G);
+    imprime_tGrafo(G);
 
     tGrafo *H = Kruskal_tGrafo(G);
     imprime_tGrafo(H);
