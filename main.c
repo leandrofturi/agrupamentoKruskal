@@ -3,9 +3,21 @@
 #include "bib/grafo.h"
 #include "bib/tratamento.h"
 #include "bib/QU.h"
+#include"bib/arquivo.h"
+#include"bib/pilha.h"
 
 
 int main(int argc, char *argv[]) {
+
+    int k = atoi(argv[2]);
+
+    Pilha* pilha = criaPilha();
+
+    leitura(argv[1], pilha);
+
+    imprimePilha(pilha);
+    liberaPilha(pilha);
+
     int N = 7;
     char *rotulos[7] = {"0","1","2","3","4","5","6"};
     tGrafo *G = inicializa_tGrafo(11, N, rotulos);
@@ -23,7 +35,7 @@ int main(int argc, char *argv[]) {
     imprime_tGrafo(G);
 
     tGrafo *H = Kruskal_tGrafo(G);
-    imprime_tGrafo(H);
+    //imprime_tGrafo(H);
     finaliza_tGrafo(H);
     finaliza_tGrafo(G);
     return(0);
