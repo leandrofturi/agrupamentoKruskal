@@ -6,6 +6,10 @@ typedef struct Euclides Euclides;
 
 
 // Distância Euclideana
-double norm2(double *a, double *b, int M);
+double disEuclides(double *a, double *b, int M);
 
-Euclides* matrizDistancia(Fila* f);
+Euclides** matrizDistancia(Fila* f, int index);
+
+Euclides* liberaEuclides(Euclides* eu);
+
+Euclides** liberaMatriz(Euclides** matriz, int n);

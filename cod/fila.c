@@ -20,6 +20,18 @@ struct Fila //tipo fila, contém o topo da fila
 
 };
 
+char* getRotulo(TFila* f)
+{
+
+return f ->rotulo;
+}
+
+double* getCoordenadas(TFila* f)
+{
+
+return f ->coordenadas;
+}
+
 Fila* criaFila(){
 
     Fila* novo = (Fila*)malloc(sizeof(Fila));
@@ -87,7 +99,7 @@ void imprimeFila(Fila *p) //funcao apenas para questoes de implementacao
 return;
 }
 
-void insere(Fila *f, TFila *ponto)
+void insere(Fila *f, TFila *ponto)// insere no final da fila
 {
     
     if (filaVazia(f))
@@ -106,7 +118,7 @@ void insere(Fila *f, TFila *ponto)
 return;
 }
 
-TFila* retira(Fila *f)
+TFila* retira(Fila *f)// retira o primeiro da fila
 {
     TFila* pop;
 

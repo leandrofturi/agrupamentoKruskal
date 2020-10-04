@@ -19,3 +19,7 @@ void insere(Fila *p, TFila *ponto);
 TFila* retira(Fila *p);
 
 Fila* liberaFila(Fila* p);
+
+char* getRotulo(TFila* f);
+
+double* getCoordenadas(TFila* f);

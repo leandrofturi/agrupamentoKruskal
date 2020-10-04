@@ -4,10 +4,11 @@
 #include"../bib/arquivo.h"
 #include"../bib/fila.h"
 
-void leitura(char* arquivo, Fila* fila)
+int leitura(char* arquivo, Fila* fila)
 {
 
     FILE* arq;
+    int m=0;
 
     arq = fopen(arquivo, "r");
 
@@ -16,7 +17,7 @@ void leitura(char* arquivo, Fila* fila)
 
         printf("Problemas na abertura do arquivo\n");
 
-    return;
+    return 0;
     }
 
     while (!feof(arq))
@@ -26,8 +27,8 @@ void leitura(char* arquivo, Fila* fila)
         char *linha=malloc(len);    
 
         getline(&linha, &len, arq);
+        m=0;
 
-        int m=0;
         for(int i=0; i<strlen(linha); i++)
         {
 
@@ -46,13 +47,13 @@ void leitura(char* arquivo, Fila* fila)
         char rotulo[strlen(token)+1];
         strcpy(rotulo,token);
         char* aux;
-        printf( "%s\n", token);
+        //printf( "%s\n", token);
 
         for(int i=0; i<m; i++) 
         {
         
             token = strtok(NULL, ",");
-            printf( "%s\n", token);
+            //printf( "%s\n", token);
             coordenadas[i] = strtod(token, &aux);
 
         }
@@ -66,5 +67,5 @@ void leitura(char* arquivo, Fila* fila)
 
     fclose(arq);
 
-return;
+return m;
 }

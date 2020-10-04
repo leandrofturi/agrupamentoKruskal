@@ -13,9 +13,15 @@ int main(int argc, char *argv[]) {
 
     Fila* fila = criaFila();
 
-    leitura(argv[1], fila);
+    int m = leitura(argv[1], fila);
+
+    int n = tamanhoFila(fila);// calculando o tamanho do vetor
+    n = (n*(n - 1) / 2);// para assim conseguir leberar a memoria
+
+    Euclides** matriz = matrizDistancia(fila, m);
 
     imprimeFila(fila);
+    liberaMatriz(matriz, n);
     liberaFila(fila);
 
     int N = 7;
