@@ -9,8 +9,8 @@
 
 CC=gcc
 CFLAGS=-I. -Wall -g  -lm
-DEPS = arquivo.h grafo.h pilha.h QU.h tratamento.h
-OBJ = cod/arquivo.o cod/grafo.o cod/QU.o cod/pilha.o cod/tratamento.o main.o
+DEPS = arquivo.h grafo.h fila.h QU.h euclides.h
+OBJ = cod/arquivo.o cod/grafo.o cod/QU.o cod/fila.o cod/euclides.o main.o
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)

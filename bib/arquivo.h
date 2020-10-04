@@ -1,3 +1,3 @@
-#include"pilha.h"
+#include"fila.h"
 
-void leitura(char* arquivo, Pilha* pilha);
+void leitura(char* arquivo, Fila* fila);

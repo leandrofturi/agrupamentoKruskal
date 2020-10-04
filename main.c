@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "bib/grafo.h"
-#include "bib/tratamento.h"
+#include "bib/euclides.h"
 #include "bib/QU.h"
 #include"bib/arquivo.h"
-#include"bib/pilha.h"
+#include"bib/fila.h"
 
 
 int main(int argc, char *argv[]) {
 
     int k = atoi(argv[2]);
 
-    Pilha* pilha = criaPilha();
+    Fila* fila = criaFila();
 
-    leitura(argv[1], pilha);
+    leitura(argv[1], fila);
 
-    imprimePilha(pilha);
-    liberaPilha(pilha);
+    imprimeFila(fila);
+    liberaFila(fila);
 
     int N = 7;
     char *rotulos[7] = {"0","1","2","3","4","5","6"};

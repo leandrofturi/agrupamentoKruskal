@@ -1,5 +1,14 @@
 #include <math.h>
-#include "../bib/tratamento.h"
+#include "../bib/euclides.h"
+
+struct Euclides
+{
+    
+    char pontoA;
+    char pontoB;
+    double distancia;
+
+};
 
 
 double norm2(double *a, double *b, int M) {
@@ -9,3 +18,9 @@ double norm2(double *a, double *b, int M) {
     d = sqrt(d);
     return(d);
 }
+
+
+/*Euclides* matrizDistancia(Fila f)
+{
+
+}*/
