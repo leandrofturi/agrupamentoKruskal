@@ -2,45 +2,46 @@
 #include <stdio.h>
 #include "../bib/QU.h"
 
+struct tQU {
+    int id;
+    int sz;
+};
 
-int** inicializa_QU(int N) {
-    int **id = (int**) malloc(2*sizeof(int*));
-    id[0] = (int*) malloc(N*sizeof(int));
-    id[1] = (int*) malloc(N*sizeof(int));
+
+tQU* inicializa_QU(int N) {
+    tQU *id = (tQU*) malloc(sizeof(tQU)*N);
     for(int i = 0; i < N; i++) {
-        id[0][i] = i;
-        id[1][i] = 1;
+        id[i].id = i;
+        id[i].sz = 1;
     }
     return(id);
 }
 
-void finaliza_QU(int **id) {
-    free(id[0]);
-    free(id[1]);
+void finaliza_QU(tQU *id) {
     free(id);
 }
 
-void une_QU(int **id, int p, int q) {
-    if(id[1][p] < id[1][q]) {
-        id[0][procura_QU(id, p)] = id[0][procura_QU(id, q)];
-        id[1][id[0][procura_QU(id, p)]]++;
+void une_QU(tQU *id, int p, int q) {
+    if(id[p].sz < id[q].sz) {
+        id[procura_QU(id, p)].id = id[procura_QU(id, q)].id;
+        id[id[procura_QU(id, p)].id].sz++;
     }
     else {
-        id[0][procura_QU(id, q)] = id[0][procura_QU(id, p)];
-        id[1][id[0][procura_QU(id, q)]]++;
+        id[procura_QU(id, q)].id = id[procura_QU(id, p)].id;
+        id[id[procura_QU(id, q)].id].sz++;
     }
 }
 
-int procura_QU(int **id, int p) {
-    while(p != id[0][p]) p = id[0][p];
+int procura_QU(tQU *id, int p) {
+    while(p != id[p].id) p = id[p].id;
     return p;
 }
 
-bool conectados_QU(int **id, int p, int q) {
+bool conectados_QU(tQU *id, int p, int q) {
     return(procura_QU(id, p) == procura_QU(id, q));
 }
 
-void componentes_QU(int **id, int N) {
+void componentes_QU(tQU *id, int N) {
     int tmp[N];
     for(int i = 0; i < N; i++) tmp[i] = 1;
 

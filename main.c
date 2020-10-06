@@ -1,48 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bib/grafo.h"
-#include "bib/euclides.h"
-#include "bib/QU.h"
-#include"bib/arquivo.h"
-#include"bib/fila.h"
+#include <stdint.h>
+#include "bib/problema.h"
 
 
 int main(int argc, char *argv[]) {
 
-    int k = atoi(argv[2]);
+    char *path_in = argv[1];
+    int k = atoi(argv[2])-1;
+    char *path_out = argv[3];
 
-    Fila* fila = criaFila();
+    tSet *S = leitura(path_in);
+    tGrafo *G = pre_processamento(S);
+    tQU *id = processamento(G, k);
+    pos_processamento(id, G, path_out);
 
-    int m = leitura(argv[1], fila);
+    finaliza_set(S);
+    finaliza_grafo(G);
+    finaliza_QU(id);
 
-    int n = tamanhoFila(fila);// calculando o tamanho do vetor
-    n = (n*(n - 1) / 2);// para assim conseguir leberar a memoria
-
-    Euclides** matriz = matrizDistancia(fila, m);
-
-    imprimeFila(fila);
-    liberaMatriz(matriz, n);
-    liberaFila(fila);
-
-    int N = 7;
-    char *rotulos[7] = {"0","1","2","3","4","5","6"};
-    tGrafo *G = inicializa_tGrafo(11, N, rotulos);
-    addAresta_tGrafo(G, "0", "1", 7);
-    addAresta_tGrafo(G, "0", "3", 5);
-    addAresta_tGrafo(G, "1", "3", 9);
-    addAresta_tGrafo(G, "1", "2", 8);
-    addAresta_tGrafo(G, "1", "4", 7);
-    addAresta_tGrafo(G, "2", "4", 5);
-    addAresta_tGrafo(G, "3", "4", 15);
-    addAresta_tGrafo(G, "3", "5", 6);
-    addAresta_tGrafo(G, "4", "5", 8);
-    addAresta_tGrafo(G, "4", "6", 9);
-    addAresta_tGrafo(G, "5", "6", 11);
-    imprime_tGrafo(G);
-
-    tGrafo *H = Kruskal_tGrafo(G);
-    //imprime_tGrafo(H);
-    finaliza_tGrafo(H);
-    finaliza_tGrafo(G);
     return(0);
 }

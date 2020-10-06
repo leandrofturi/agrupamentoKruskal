@@ -1,107 +1,112 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include "../bib/euclides.h"
 
-struct Euclides
-{
-    
-    char* pontoA;
-    char* pontoB;
-    double distancia;
+struct tPonto {
+    char *rot;
+    double *x;
+    int M;
+    tPonto *prox;
+};
 
+struct tSet {
+    tPonto *pontos;
+    int N;
 };
 
 
-double disEuclides(double *a, double *b, int M) {
-    double d = 0;
+tSet* inicializa_set( ) {
+    tSet *S = (tSet*) malloc(sizeof(tSet));
+    S->pontos = NULL;
+    S->N = 0;
+    return(S);
+}
+
+void finaliza_set(tSet *S) {
+    while(S->N)
+        finaliza_ponto(pop_set(S));
+    free(S);
+}
+
+// Operações de custo constante.
+void push_set(tSet *S, tPonto *p) {
+    p->prox = S->pontos;
+    S->pontos = p;
+    S->N++;
+}
+
+tPonto* pop_set(tSet *S) {
+    tPonto *p = S->pontos;
+    S->pontos = S->pontos->prox;
+    S->N--;
+    return(p);
+}
+
+int tamanho_set(tSet *S) {
+    return(S->N);
+}
+
+char** rotulos_set(tSet *S) {
+    char **rot = (char**) malloc(sizeof(char*)*S->N);
+    tPonto *tmp = S->pontos;
+    for(int i = 0; i < S->N; i++) {
+        rot[i] = tmp->rot;
+        tmp = tmp->prox;
+    }
+    return(rot);
+}
+
+void imprime_set(tSet *S) {
+    if(!S)
+        return;
+
+    tPonto *p = S->pontos;
+    for(int i = 0; i < S->N && p; i++) {
+        printf("%s", p->rot);
+        printf(" ( ");
+        for(int j = 0; j < p->M; j++)
+            printf("%.2lf ", p->x[j]);
+        printf(")\n");
+        p = p->prox;
+    }
+    printf("\n");
+}
+
+tPonto* novo_ponto(char *rot, double *x, int M) {
+    tPonto *p = (tPonto*) malloc(sizeof(tPonto));
+    p->rot = (char*) malloc((strlen(rot)+1)*sizeof(char));
+    strcpy(p->rot, rot);
+    p->x = (double*) malloc(sizeof(double)*M);
     for(int i = 0; i < M; i++)
+        p->x[i] = x[i];
+    p->M = M;
+    return(p);
+}
+
+void finaliza_ponto(tPonto *p) {
+    free(p->rot);
+    free(p->x);
+    free(p);
+}
+
+char* rot_ponto(tPonto *p) {
+    return(p->rot);
+}
+
+double* x_ponto(tPonto *p) {
+    return(p->x);
+}
+
+int M_ponto(tPonto *p) {
+    return(p->M);
+}
+
+double norm2(double *a, double *b, int N) {
+    double d = 0;
+    for(int i = 0; i < N; i++)
         d += (a[i] - b[i])*(a[i] - b[i]);
     d = sqrt(d);
     return(d);
-}
-
-
-Euclides** matrizDistancia(Fila* f, int index)//calcula em um vetor as distancias euclidianas
-{
-
-    int n = tamanhoFila(f);
-    n = (n*(n - 1) / 2);
-    Euclides** matriz = (Euclides**)malloc(n*sizeof(Euclides*));//cria o vetor de distancias
-    for(int i=0; i<n; i++){
-
-        matriz[i] = (Euclides*)malloc(sizeof(Euclides));
-
-    }
-    n=0;
-
-    Fila* aux = criaFila();
-    TFila* retirado, *multiplicado; //retirado é a quele que vai ser multiplicado por todos da fila e multiplicado é aquele a ser multiplicado pelo retirado
-
-    while(!filaVazia(f))//sao utilizadas duas filas para fazer os calculos
-    {
-
-        retirado = retira(f);//retira o ponto que serah usado para calcular as distancia com os demais pontos na fila
-
-        int m = tamanhoFila(f);//calcula quantos pontos restam na fila
-
-        for(int i=0; i<m; i++)
-        {
-
-            multiplicado = retira(f);//retira da fila o ponto a ter a distancia em relacao ao ponto 'retirado' calculado
-
-            matriz[n] ->pontoA = (char*)malloc((strlen(getRotulo(retirado))+1)*sizeof(char));
-            matriz[n] ->pontoB = (char*)malloc((strlen(getRotulo(multiplicado))+1)*sizeof(char));
-
-            strcpy(matriz[n] ->pontoA, getRotulo(retirado));
-            strcpy(matriz[n] ->pontoB, getRotulo(multiplicado));
-
-            matriz[n] ->distancia = disEuclides(getCoordenadas(retirado), getCoordenadas(multiplicado), index);
-
-            insere(f, multiplicado);// insere o ponto usado de volta a fila para que ele possa ser usado nas proximas passagens
-
-            n++;//atualiza a posicao do vetor
-
-        }
-
-        //printf("inserindo no aux ->%s\n",getRotulo(retirado));
-        insere(aux, retirado);//coloca numa fila auxiliar os pontos que ja tiveram as distancias calculadas
-
-    }
-
-    while(!filaVazia(aux))
-    {
-
-        insere(f, retira(aux));//devolve os pontos para a fila original
-
-    }
-
-    free(aux); 
-
-return matriz;
-}
-
-Euclides* liberaEuclides(Euclides* eu)
-{
-
-    free(eu ->pontoA);
-    free(eu ->pontoB);
-    free(eu);
-
-return eu;
-}
-
-Euclides** liberaMatriz(Euclides** matriz, int n)
-{
-
-    for(int i=0; i<n; i++)
-    {
-
-        matriz[i] = liberaEuclides(matriz[i]);
-
-    }
-    free(matriz);
-
-return matriz;
 }
