@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include "../bib/problema.h"
 
 
@@ -10,10 +11,15 @@ static char *pegaLinha(FILE *arq) {
     size_t n = 0, r;
     char *buf = NULL;
 
-    r = getline(&buf, &n, arq);
-    if(r < 0) {
+    r = getdelim(&buf, &n, '\n', arq);
+    if(r < 0)
+        return(NULL);
+
+    if(buf && r >= UINT_MAX) {
+        free(buf);
         return(NULL);
     }
+
     return(buf);
 }
 
@@ -39,30 +45,33 @@ tSet* leitura(char *path) {
     }
     // Primeira linha. A partir dela é calculado o tamanho do ponto (M), para verificação posterior.
     linha = pegaLinha(arq);
+    if(!linha)
+        return(S);
     M = count(linha, *sep);
     // https://pubs.opengroup.org/onlinepubs/9699919799/functions/strtok.html
     token = strtok(linha, sep);
     char *rot = token; // Rótulo
     double x[M];
     token = strtok(NULL, sep); // Coordenadas
-    for(m = 0; m < M; m++, token = strtok(NULL, sep))
+    for(m = 0; token && m < M; m++, token = strtok(NULL, sep))
         x[m] = strtod(token, NULL);
     push_set(S, novo_ponto(rot, x, M));
     free(linha);
 
-    while(!feof(arq)) {
+    while((!feof(arq))) {
         linha = pegaLinha(arq);
+        if(!linha)
+            break;
 
         token = strtok(linha, sep); // Rótulo
         rot = token;
         token = strtok(NULL, sep); // Coordenadas
-        for(m = 0; token != NULL; m++, token = strtok(NULL, sep))
+        for(m = 0; token; m++, token = strtok(NULL, sep))
             x[m] = strtod(token, NULL);
 
         if(m != M) { // Algum ponto possui corrdenadas a mais?
-            fclose(arq);
-            finaliza_set(S);
-            return(NULL);
+            free(linha);
+            continue;
         }
         push_set(S, novo_ponto(rot, x, M)); // Inserção no conjunto de pontos
         free(linha);

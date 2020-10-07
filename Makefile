@@ -8,7 +8,7 @@
 #-lm obrigatorio caso utilize a biblioteca math.h
 
 CC=gcc
-CFLAGS=-I. -Wall -g  -lm
+CFLAGS=-I. -Wall -g -lm
 DEPS = problema.h grafo.h QU.h euclides.h
 OBJ = cod/problema.o cod/grafo.o cod/QU.o cod/euclides.o main.o
 

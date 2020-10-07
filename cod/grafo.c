@@ -40,7 +40,7 @@ tGrafo* inicializa_grafo(int M, int N, char **rotulos) {
     G->arestas = (tAresta*) malloc(M*sizeof(tAresta));
     G->rotulos = (char**) malloc(N*sizeof(char*));
     for(int i = 0; i < N; i++) {
-        G->rotulos[i] = (char*) malloc(sizeof(rotulos[i]));
+        G->rotulos[i] = (char*) malloc((strlen(rotulos[i])+1)*sizeof(char*));
         strcpy(G->rotulos[i], rotulos[i]);
     }
     // Rótulos ordenados, para que o mapeamento seja mais rápido.
